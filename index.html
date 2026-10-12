@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ice Client</title>
+<meta name="description" content="Ice Client: a Fabric client mod for finding hidden bases, with clean menus, profiles and a custom HUD. Free download.">
+<meta property="og:title" content="Ice Client">
+<meta property="og:description" content="Find hidden bases, skip raided ones, and play with a clean HUD. Free Fabric mod for Minecraft 26.2 and 26.1.2.">
+<meta property="og:image" content="assets/menu.png">
+<link rel="icon" type="image/png" href="assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070d16; --bg2:#0c1724; --card:#0f1d2d; --line:#1d3247;
+  --text:#e6f1fb; --muted:#8aa3ba; --ice:#7fd4ff; --ice2:#3aa8e8; --ink:#04121e;
+  --discord:#5865f2;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#f3f8fc; --bg2:#e7f1f9; --card:#ffffff; --line:#cfe0ee;
+    --text:#0b1b2a; --muted:#4d6579; --ice:#0b7fc0; --ice2:#0a6aa3; --ink:#ffffff;
+    color-scheme:light;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+img{max-width:100%;display:block}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;line-height:1.15;margin:0}
+
+/* nav */
+nav{position:sticky;top:0;z-index:5;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg) 80%,transparent);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:12px;height:62px}
+.brand{display:flex;align-items:center;gap:10px;font:700 18px "Space Grotesk",sans-serif;text-decoration:none}
+.brand img{width:30px;height:30px;border-radius:8px}
+nav .links{margin-left:auto;display:flex;gap:6px;align-items:center}
+nav .links a{text-decoration:none;color:var(--muted);font-weight:500;padding:8px 12px;border-radius:8px}
+nav .links a:hover{color:var(--text);background:var(--bg2)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 22px;border-radius:12px;font-weight:600;text-decoration:none;border:1px solid transparent;transition:transform .15s,box-shadow .15s,background .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn svg{width:20px;height:20px;flex:none}
+.btn-ice{background:linear-gradient(135deg,var(--ice),var(--ice2));color:var(--ink);box-shadow:0 8px 28px -10px var(--ice)}
+.btn-ghost{border-color:var(--line);background:var(--card)}
+.btn-discord{background:var(--discord);color:#fff}
+nav .btn{padding:8px 14px;border-radius:10px;font-size:14px}
+nav .links a.btn-ice,nav .links a.btn-ice:hover{color:var(--ink);background:linear-gradient(135deg,var(--ice),var(--ice2))}
+
+/* hero */
+.hero{position:relative;overflow:hidden;padding:80px 0 60px}
+.hero::before{content:"";position:absolute;inset:-40% -10% auto;height:700px;background:radial-gradient(closest-side,color-mix(in srgb,var(--ice) 22%,transparent),transparent);pointer-events:none}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center}
+.tag{display:inline-block;font-size:13px;font-weight:600;color:var(--ice);background:color-mix(in srgb,var(--ice) 12%,transparent);border:1px solid color-mix(in srgb,var(--ice) 30%,transparent);padding:5px 12px;border-radius:99px;margin-bottom:18px}
+.hero h1{font-size:clamp(40px,6vw,64px);letter-spacing:-.02em}
+.hero h1 span{background:linear-gradient(135deg,var(--ice),var(--ice2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);font-size:18px;margin:18px 0 28px;max-width:34em}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.shot{border-radius:16px;border:1px solid var(--line);box-shadow:0 30px 70px -30px #000;overflow:hidden;background:var(--card)}
+.hero .shot{transform:perspective(1200px) rotateY(-6deg)}
+
+/* sections */
+section{padding:70px 0}
+.alt{background:var(--bg2);border-block:1px solid var(--line)}
+.head{max-width:640px;margin-bottom:36px}
+.head h2{font-size:clamp(28px,4vw,38px)}
+.head p{color:var(--muted);margin:10px 0 0}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;transition:border-color .2s,transform .2s}
+.card:hover{border-color:color-mix(in srgb,var(--ice) 50%,var(--line));transform:translateY(-3px)}
+.card .ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;background:color-mix(in srgb,var(--ice) 14%,transparent);color:var(--ice);margin-bottom:14px}
+.card .ic svg{width:22px;height:22px}
+.card h3{font-size:18px;margin-bottom:6px}
+.card p{margin:0;color:var(--muted);font-size:15px}
+
+.gallery{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.gallery figure{margin:0}
+.gallery figcaption{color:var(--muted);font-size:14px;margin-top:10px}
+
+/* download */
+.dl{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+.dlcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px}
+.dlcard .ver{font:700 26px "Space Grotesk",sans-serif}
+.dlcard .meta{color:var(--muted);font-size:14px}
+.dlcard .btn{align-self:flex-start}
+.badge{font-size:12px;font-weight:600;color:var(--ice);margin-left:8px;vertical-align:middle}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.steps li{counter-increment:s;display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.steps li::before{content:counter(s);flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-weight:700;background:color-mix(in srgb,var(--ice) 16%,transparent);color:var(--ice)}
+.steps a{color:var(--ice)}
+kbd{font:600 13px ui-monospace,monospace;background:var(--bg2);border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 7px}
+
+/* discord band */
+.join{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;background:linear-gradient(135deg,color-mix(in srgb,var(--discord) 22%,var(--card)),var(--card));border:1px solid var(--line);border-radius:20px;padding:32px}
+.join h2{font-size:28px}
+.join p{color:var(--muted);margin:6px 0 0}
+
+footer{padding:36px 0;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+@media (max-width:860px){
+  .hero{padding:48px 0 40px}
+  .hero .wrap,.gallery,.dl{grid-template-columns:1fr}
+  .hero .shot{transform:none}
+  .grid{grid-template-columns:1fr 1fr}
+  nav .links a:not(.btn){display:none}
+}
+@media (max-width:560px){
+  .grid{grid-template-columns:1fr}
+  .wrap{padding:0 16px}
+  section{padding:52px 0}
+  .join{padding:24px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="i-dl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 21h16"/></symbol>
+  <symbol id="i-discord" viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.6 1.3a18.4 18.4 0 0 0-5.6 0L8.6 3a19.7 19.7 0 0 0-4.9 1.5C.6 9.1-.3 13.6.1 18.1a19.9 19.9 0 0 0 6 3l1.3-2.1a12.9 12.9 0 0 1-2-1l.5-.4a14.2 14.2 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1l1.3 2.1a19.8 19.8 0 0 0 6-3c.5-5.2-.8-9.7-3.6-13.7ZM8 15.4c-1.2 0-2.2-1.1-2.2-2.4S6.8 10.6 8 10.6s2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Zm8 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Z"/></symbol>
+</svg>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#"><img src="assets/icon.png" alt="">Ice Client</a>
+    <div class="links">
+      <a href="#features">Features</a>
+      <a href="#screens">Screenshots</a>
+      <a href="#install">Install</a>
+      <a class="btn btn-ice" href="#download"><svg><use href="#i-dl"/></svg>Download</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <span class="tag">v2.11.0 · Fabric · Minecraft 26.2 &amp; 26.1.2</span>
+      <h1>Find the bases<br>other players <span>miss.</span></h1>
+      <p>Ice Client scans every chunk around you for hidden stashes, rates how real each one looks, and skips the ones that are already raided. It also comes with clean menus, ready-made profiles and a custom HUD.</p>
+      <div class="cta">
+        <a class="btn btn-ice" href="#download"><svg><use href="#i-dl"/></svg>Download free</a>
+        <a class="btn btn-discord" href="https://discord.gg/BW8hM98jM" target="_blank" rel="noopener"><svg><use href="#i-discord"/></svg>Join the Discord</a>
+      </div>
+    </div>
+    <div class="shot"><img src="assets/menu.png" alt="Ice Client menu with Combat, Visual, Chunks, Utility, HUD and Settings panels" width="854" height="480"></div>
+  </div>
+</header>
+
+<section id="features">
+  <div class="wrap">
+    <div class="head">
+      <h2>Everything for stash hunting</h2>
+      <p>Built for big survival servers, and it works with anti-xray servers like DonutSMP.</p>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg></div><h3>Suspicious Chunks</h3><p>Highlights chunks packed with chests, barrels, hoppers and shulkers. Red means somebody built something there.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 16.6 6.5 19.5l1-6.3L3 8.9 9 8z"/></svg></div><h3>Stash AI</h3><p>Rates each find from 0 to 100%. Grown amethyst nearby counts as extra proof, because someone spent real time there.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4l16 16M20 4L4 20"/><circle cx="12" cy="12" r="9"/></svg></div><h3>Raided Bases</h3><p>Spots raided bases from visitor signs, lava and empty opened chests, then greys them out so you don't waste the trip.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><h3>Storage &amp; Player ESP</h3><p>Outlines chests, shulkers and players, with tracers, glow and distance tags you can change.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4l6 6-9 9H5v-6z"/><path d="M12 6l6 6"/></svg></div><h3>Debris Miner</h3><p>Finds ancient debris and ignores the fake debris anti-xray hides inside solid netherrack.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></div><h3>Reload Chunks</h3><p>One key reloads every chunk, resets the ESP and rescans the whole area at full speed.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h7"/></svg></div><h3>Profiles</h3><p>Switch between Stash Hunting, Clean PvP, Showcase or Minimal in one click, or save your own.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 21h10"/></svg></div><h3>Custom HUD</h3><p>Coordinates with Nether conversion, a keybind list, keystrokes and CPS, notifications and the song you're playing.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h0"/></svg></div><h3>Explained everywhere</h3><p>Hover over any setting and it tells you, in plain words, what it does.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="screens" class="alt">
+  <div class="wrap">
+    <div class="head">
+      <h2>Clean menus, 11 themes</h2>
+      <p>Press <kbd>F4</kbd> to open the menu. Search any feature, set it up on its own page, and pick from 11 themes, including Ice, Ocean, Sakura, Blood and Void.</p>
+    </div>
+    <div class="gallery">
+      <figure><div class="shot"><img src="assets/settings.png" alt="Suspicious Chunks settings page with a hover explanation" width="854" height="480" loading="lazy"></div><figcaption>Every setting has its own page and a hover explanation.</figcaption></figure>
+      <figure><div class="shot"><img src="assets/hud.png" alt="In-game HUD with info, keybinds, keystrokes and music" width="854" height="480" loading="lazy"></div><figcaption>The HUD, shown in the Blood theme.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="download">
+  <div class="wrap">
+    <div class="head">
+      <h2>Download</h2>
+      <p>Pick the file for your Minecraft version. It's free and needs Fabric Loader plus Fabric API.</p>
+    </div>
+    <div class="dl">
+      <div class="dlcard">
+        <div><span class="ver">Minecraft 26.2</span><span class="badge">Latest</span></div>
+        <div class="meta">Ice Client 2.11.0 · 472 KB · Fabric</div>
+        <a class="btn btn-ice" href="https://github.com/weaps1556-lab/ice-client/releases/download/v2.11.0/IceClient-2.11.0-mc26.2.jar"><svg><use href="#i-dl"/></svg>Download for 26.2</a>
+      </div>
+      <div class="dlcard">
+        <div><span class="ver">Minecraft 26.1.2</span></div>
+        <div class="meta">Ice Client 2.11.0 · 472 KB · Fabric</div>
+        <a class="btn btn-ghost" href="https://github.com/weaps1556-lab/ice-client/releases/download/v2.11.0/IceClient-2.11.0-mc26.1.2.jar"><svg><use href="#i-dl"/></svg>Download for 26.1.2</a>
+      </div>
+    </div>
+
+    <div class="head" id="install" style="margin-top:56px">
+      <h2>How to install</h2>
+    </div>
+    <ol class="steps">
+      <li><div>Install <a href="https://fabricmc.net/use/installer/" target="_blank" rel="noopener">Fabric Loader</a> for your Minecraft version. Launchers like Modrinth, Prism or CurseForge can do this for you.</div></li>
+      <li><div>Get <a href="https://modrinth.com/mod/fabric-api" target="_blank" rel="noopener">Fabric API</a> for the same version.</div></li>
+      <li><div>Put Fabric API and the Ice Client <code>.jar</code> into your <code>.minecraft/mods</code> folder.</div></li>
+      <li><div>Start the game and press <kbd>F4</kbd> to open the menu. To begin, pick the <b>Stash Hunting</b> profile.</div></li>
+    </ol>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="join">
+      <div>
+        <h2>Join the Ice Client Discord</h2>
+        <p>Get updates first, ask for help and share your finds.</p>
+      </div>
+      <a class="btn btn-discord" href="https://discord.gg/BW8hM98jM" target="_blank" rel="noopener"><svg><use href="#i-discord"/></svg>Join the Discord</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Ice Client. All rights reserved.</span>
+    <span>Not affiliated with Mojang or Microsoft.</span>
+  </div>
+</footer>
+
+</body>
+</html>
